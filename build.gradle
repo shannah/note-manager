@@ -16,6 +16,14 @@ dependencies {
     implementation 'io.quarkus:quarkus-qute'
     implementation 'io.quarkus:quarkus-arc'
     testImplementation 'io.quarkus:quarkus-junit5'
+    // JavaFX
+    implementation 'org.openjfx:javafx-controls:21'
+
+    // jDeploy Desktop Lib - use BOM for version management
+    implementation platform('ca.weblite:jdeploy-desktop-lib-bom:1.0.0-SNAPSHOT')
+    implementation 'ca.weblite:jdeploy-desktop-lib-javafx'
+    implementation 'ca.weblite:jdeploy-desktop-lib-hive-filewatcher'
+    implementation 'ca.weblite:jdeploy-desktop-lib-bridge'
 }
 
 group = 'com.example'

@@ -1,41 +1,44 @@
 {
-  "license": "ISC",
-  "bin": {"note-manager": "jdeploy-bundle/jdeploy.js"},
-  "name": "note-manager",
-  "description": "A Quarkus MCP server deployed using jDeploy",
-  "files": ["jdeploy-bundle"],
-  "main": "index.js",
-  "preferGlobal": true,
-  "scripts": {"test": "echo \"Error: no test specified\" && exit 1"},
-  "repository": "https://github.com/shannah/note-manager",
-  "version": "1.0.0",
-  "jdeploy": {
-    "fallbackToUniversal": false,
-    "github": {
-      "releases_repository": "shannah/note-manager-releases",
-      "releases_url": "https://github.com/shannah/note-manager/releases",
-      "repository": "shannah/note-manager"
+    "bin": {"note-manager": "jdeploy-bundle/jdeploy.js"},
+    "author": "Steve Hannah",
+    "description": "A Quarkus MCP server deployed using jDeploy",
+    "main": "index.js",
+    "preferGlobal": true,
+    "repository": {"url": "https://github.com/shannah/note-manager"},
+    "version": "1.0.0",
+    "jdeploy": {
+        "singleton": true,
+        "github": {
+            "releases_repository": "shannah/note-manager-releases",
+            "releases_url": "https://github.com/shannah/note-manager/releases",
+            "repository": "shannah/note-manager"
+        },
+        "generateLegacyBundles": false,
+        "javaVersion": "21",
+        "ai": {"mcp": {"command": "note-manager"}},
+        "title": "Note Manager",
+        "downloadPage": {"platforms": ["default"]},
+        "fallbackToUniversal": false,
+        "publishTargets": [{
+            "name": "github: github",
+            "type": "GITHUB",
+            "url": "https://github.com/shannah/note-manager/releases"
+        }],
+        "urlSchemes": ["notemanager"],
+        "jar": "build/note-manager-1.0.0-SNAPSHOT-runner.jar",
+        "javafx": true,
+        "platformBundlesEnabled": false,
+        "commands": {"note-manager": {"description": "Note Manager MCP server"}}
     },
-    "generateLegacyBundles": false,
-    "publishTargets": [{
-      "isDefault": true,
-      "name": "github: shannah/note-manager",
-      "type": "GITHUB",
-      "url": "https://github.com/shannah/note-manager/releases"
-    }],
-    "javaVersion": "21",
-    "ai": {"mcp": {"command": "note-manager"}},
-    "jar": "build/note-manager-1.0.0-SNAPSHOT-runner.jar",
-    "title": "Note Manager",
-    "downloadPage": {"platforms": ["default"]},
-    "platformBundlesEnabled": false,
-    "commands": {"note-manager": {"description": "Note Manager MCP server"}}
-  },
-  "dependencies": {
-    "command-exists-promise": "^2.0.2",
-    "node-fetch": "2.6.7",
-    "tar": "^4.4.8",
-    "yauzl": "^2.10.0",
-    "shelljs": "^0.8.4"
-  }
+    "dependencies": {
+        "command-exists-promise": "^2.0.2",
+        "node-fetch": "2.6.7",
+        "tar": "^4.4.8",
+        "yauzl": "^2.10.0",
+        "shelljs": "^0.8.4"
+    },
+    "license": "ISC",
+    "name": "note-manager",
+    "files": ["jdeploy-bundle"],
+    "scripts": {"test": "echo \"Error: no test specified\" && exit 1"}
 }

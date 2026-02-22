@@ -1,10 +1,8 @@
 package com.github.shannah.notemanager;
 
+import ca.weblite.jdeploy.app.hive.filewatcher.FileWatcherHiveDriver;
 import io.quarkus.runtime.Quarkus;
 import io.quarkus.runtime.annotations.QuarkusMain;
-
-import javax.swing.*;
-import java.awt.*;
 
 @QuarkusMain
 public class NoteManager {
@@ -13,52 +11,25 @@ public class NoteManager {
     public static final String MODE_COMMAND = "command";
     public static final String PROP_MODE = "jdeploy.mode";
 
+    private static final String APP_NAME = "note-manager";
+
     public static void main(String... args) {
-        String mode = System.getProperty(PROP_MODE, MODE_COMMAND);
-
-        if (MODE_GUI.equalsIgnoreCase(mode)) {
-            launchSwingApp(args);
-        } else {
-            // Launch Quarkus MCP server
-            Quarkus.run(args);
+        // Ensure jdeploy.app.name is set for Hive IPC (required by FileWatcherHiveDriver)
+        if (System.getProperty("jdeploy.app.name") == null) {
+            System.setProperty("jdeploy.app.name", APP_NAME);
         }
-    }
 
-    private static void launchSwingApp(String... args) {
-        SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Note Manager");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(500, 300);
-            frame.setLayout(new BorderLayout());
+        // Install Hive IPC driver for background messaging between instances
+        FileWatcherHiveDriver.install();
 
-            // Title label
-            JLabel titleLabel = new JLabel("Note Manager", SwingConstants.CENTER);
-            titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-            titleLabel.setBorder(BorderFactory.createEmptyBorder(20, 10, 10, 10));
+        String mode = System.getProperty(PROP_MODE, MODE_GUI);
 
-            // Info panel with details about available tools
-            JPanel infoPanel = new JPanel();
-            infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
-            infoPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
-
-            JLabel statusLabel = new JLabel("Status: Running in GUI mode");
-            statusLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-            JLabel infoLabel = new JLabel("<html><center>This app provides tools via MCP.<br><br>" +
-                    "Available tools:<br>" +
-                    "- <b>greet</b>: Generate a greeting message<br>" +
-                    "- <b>echo</b>: Echo back a message</center></html>");
-            infoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-            infoLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
-
-            infoPanel.add(statusLabel);
-            infoPanel.add(infoLabel);
-
-            frame.add(titleLabel, BorderLayout.NORTH);
-            frame.add(infoPanel, BorderLayout.CENTER);
-
-            frame.setLocationRelativeTo(null);
-            frame.setVisible(true);
-        });
+        if (MODE_COMMAND.equalsIgnoreCase(mode)) {
+            // MCP server mode: Quarkus handles stdin/stdout MCP protocol
+            Quarkus.run(args);
+        } else {
+            // GUI mode: launch the JavaFX application (with AWT handler registered first)
+            NoteManagerApp.main(args);
+        }
     }
 }
